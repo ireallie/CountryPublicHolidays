@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[HolidayNotes]
+(
+	[Lang]	NVARCHAR(2) NOT NULL,
+	[Text]	NVARCHAR(250) NOT NULL,
+	[HolidayId] UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT [FK_HolidayNotes_To_Holidays_Id] FOREIGN KEY ([HolidayId]) REFERENCES [Holidays]([Id]) ON DELETE CASCADE
+)

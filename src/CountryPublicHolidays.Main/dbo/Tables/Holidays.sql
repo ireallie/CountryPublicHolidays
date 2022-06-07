@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[Holidays]
+(
+	[Id]			UNIQUEIDENTIFIER	NOT NULL PRIMARY KEY,
+	[Date]			DATETIME			NOT NULL,
+	[DateTo]		DATETIME			NULL,
+	[ObservedOn]	DATETIME			NULL,
+	[HolidayType]	NVARCHAR(25)		NOT NULL,
+	[Country]		NVARCHAR(50)		NOT NULL,
+)
