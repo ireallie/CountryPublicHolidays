@@ -27,7 +27,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Tests.Repositories
             var configurationSectionMock = new Mock<IConfigurationSection>();
             configurationSectionMock
                 .SetupGet(m => m[It.Is<string>(s => s == "MainDatabase")])
-                .Returns("Data Source=host.docker.internal,5050; Initial Catalog=CountryPublicHolidays;User Id=sa;Password=P@ssword123;MultipleActiveResultSets=true");
+                .Returns("Server=tcp:sqlserverforazure.database.windows.net,1433;Initial Catalog=CountryPublicHolidays;Persist Security Info=False;User ID=ireallie;Password=P@ssword123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
             var configurationMock = new Mock<IConfiguration>();
             configurationMock

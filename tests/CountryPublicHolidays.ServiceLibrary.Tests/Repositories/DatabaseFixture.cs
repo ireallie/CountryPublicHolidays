@@ -16,7 +16,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Tests.Repositories
 
         public DatabaseFixture()
         {
-            Connection = new SqlConnection("Data Source=host.docker.internal,5050; Initial Catalog=CountryPublicHolidays;User Id=sa;Password=P@ssword123;MultipleActiveResultSets=true");
+            Connection = new SqlConnection("Server=tcp:sqlserverforazure.database.windows.net,1433;Initial Catalog=CountryPublicHolidays;Persist Security Info=False;User ID=ireallie;Password=P@ssword123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             SeedData();
         }
 

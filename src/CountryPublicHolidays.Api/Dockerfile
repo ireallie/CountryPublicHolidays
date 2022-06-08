@@ -7,10 +7,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["CountryPublicHolidays.Api/CountryPublicHolidays.Api.csproj", "CountryPublicHolidays.Api/"]
-RUN dotnet restore "CountryPublicHolidays.Api/CountryPublicHolidays.Api.csproj"
+COPY ["src/CountryPublicHolidays.Api/CountryPublicHolidays.Api.csproj", "src/CountryPublicHolidays.Api/"]
+COPY ["src/CountryPublicHolidays.ServiceLibrary/CountryPublicHolidays.ServiceLibrary.csproj", "src/CountryPublicHolidays.ServiceLibrary/"]
+RUN dotnet restore "src/CountryPublicHolidays.Api/CountryPublicHolidays.Api.csproj"
 COPY . .
-WORKDIR "/src/CountryPublicHolidays.Api"
+WORKDIR "/src/src/CountryPublicHolidays.Api"
 RUN dotnet build "CountryPublicHolidays.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
