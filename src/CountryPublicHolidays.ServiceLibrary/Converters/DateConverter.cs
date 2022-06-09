@@ -9,6 +9,10 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
     {
         private readonly Type[] _types;
 
+        public DateConverter()
+        {
+
+        }
         public DateConverter(params Type[] types)
         {
             _types = types;
@@ -25,6 +29,11 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
             int day = (int)token.SelectToken("day").ToObject(typeof(int));
             int month = (int)token.SelectToken("month").ToObject(typeof(int));
             int year = (int)token.SelectToken("year").ToObject(typeof(int));
+
+            if(year > 9999)
+            {
+                year = 9999;
+            }
 
             return new DateTime(year, month, day);
         }

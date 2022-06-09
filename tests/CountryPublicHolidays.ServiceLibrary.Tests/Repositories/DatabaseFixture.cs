@@ -16,7 +16,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Tests.Repositories
 
         public DatabaseFixture()
         {
-            Connection = new SqlConnection("Server=tcp:sqlserverforazure.database.windows.net,1433;Initial Catalog=CountryPublicHolidays;Persist Security Info=False;User ID=ireallie;Password=P@ssword123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            Connection = new SqlConnection("Server = tcp:{ your_sqlserver_url},1433; Initial Catalog = { your_db_name }; Persist Security Info = False; User ID = { your_username }; Password ={ your_password}; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30;");
             SeedData();
         }
 
