@@ -3,11 +3,11 @@
 A small WEB API application that returns country public holidays.
 
 ## Page Contents
-Deployment Procedure
-Build the Docker Image locally
-Pushing the image to docker hub using ```docker push``` command
-Instructing Azure to pull the image from Docker Hub
-Enabling Continuous Deployment 
+- Deployment Procedure
+- Build the Docker Image locally
+- Pushing the image to docker hub using ```docker push``` command
+- Instructing Azure to pull the image from Docker Hub
+- Enabling Continuous Deployment 
 
 #### Deployment instructions
 
