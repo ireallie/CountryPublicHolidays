@@ -59,14 +59,26 @@ namespace CountryPublicHolidays.ServiceLibrary.EntityConverters
 
                 foreach (var flag in flagsList)
                 {
-                    holidayFlagsEntities.Add(new HolidayFlagEntity() { Type = flag });
+                    holidayFlagsEntities.Add(new HolidayFlagEntity() { Id = Guid.NewGuid(), Name = flag });
                 }
+
+                holidayEntity.Flags = holidayFlagsEntities;
             }
 
             JToken holidayType = token["holidayType"];
-            if(holidayType != null)   
+            if (holidayType != null)
             {
-                holidayEntity.HolidayType = (string)holidayType.ToObject(typeof(string));   
+                //var holidayTypeEntity = new HolidayTypeEntity();
+                //holidayEntity.HolidayType = holidayTypeEntity;
+                //holidayEntity.HolidayType.Type = (string)holidayType.ToObject(typeof(string));
+                holidayEntity.HolidayType = new HolidayTypeEntity() { Type = (string)holidayType.ToObject(typeof(string)) };
+                //var holidayTypesList = holidayTypes.ToObject<List<string>>();
+                //var holidayTypesEntities = new List<HolidayTypeEntity>();
+
+                //foreach (var holidayType in holidayTypesList)
+                //{
+                //    holidayTypesEntities.Add(new HolidayTypeEntity() { Id = Guid.NewGuid(), Type = holidayType });
+                //}
             }
 
             return holidayEntity;

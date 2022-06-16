@@ -9,10 +9,6 @@ using System.Threading.Tasks;
 
 namespace CountryPublicHolidays.ServiceLibrary.Calculators
 {
-    public interface IMaxNumberOfFreeDaysCalculator
-    {
-        Task<int> CalculateNumberOfFreeDaysInARow(string country, int year, HttpClient httpClient);
-    }
     public class MaxNumberOfFreeDaysCalculator : IMaxNumberOfFreeDaysCalculator
     {
         private readonly IHolidayRepository _holidayRepository;

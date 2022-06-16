@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CountryPublicHolidays.ServiceLibrary.Entities
 {
-    public class HolidayFlagEntity
+    public class HolidayHolidayFlagEntity
     {
-        public string Type { get; set; }
         public Guid HolidayId { get; set; }
+        public Guid HolidayFlagId { get; set; }
     }
 }

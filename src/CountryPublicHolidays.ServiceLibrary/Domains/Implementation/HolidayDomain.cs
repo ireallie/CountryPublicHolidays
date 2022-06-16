@@ -8,12 +8,6 @@ using System.Threading.Tasks;
 
 namespace CountryPublicHolidays.ServiceLibrary.Domains
 {
-    public interface IHolidayDomain
-    {
-        Task SaveHolidays(IEnumerable<HolidayEntity> entities, string country);
-        Task<Dictionary<int, List<HolidayEntity>>> GetHolidays();
-        Task<bool> IsHoliday(string date, string country);
-    }
     public class HolidayDomain : IHolidayDomain
     {
         private readonly IHolidayRepository _holidayRepository;
@@ -39,8 +33,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Domains
         {
             foreach (var entity in entities)
             {
-                entity.Country = country;
-                await _holidayRepository.InsertAsync(entity);
+                await _holidayRepository.InsertAsync(entity, country);
             }
         }
     }

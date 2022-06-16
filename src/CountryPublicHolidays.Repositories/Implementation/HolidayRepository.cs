@@ -10,30 +10,37 @@ using System.Threading.Tasks;
 
 namespace CountryPublicHolidays.ServiceLibrary.Repositories
 {
-    public interface IHolidayRepository
-    {
-        Task<Dictionary<int, List<HolidayEntity>>> GetAsync();
-        Task<int> InsertAsync(HolidayEntity entity);
-        Task<bool> IsHoliday(string date, string country);
-        Task<IEnumerable<DateTime>> GetHolidaysDates(string country, int year);
-    }
     public class HolidayRepository : IHolidayRepository
     {
         private readonly string _connectionString;
         private readonly IHolidayFlagRepository _holidayFlagRepository;
         private readonly IHolidayNameRepository _holidayNameRepository;
         private readonly IHolidayNoteRepository _holidayNoteRepository;
+        private readonly IHolidayHolidayFlagRepository _holidayHolidayFlagRepository;
+        private readonly IHolidayTypeRepository _holidayTypeRepository;
+        private readonly ICountryHolidayRepository _countryHolidayRepository;
+        private readonly ICountryRepository _countryRepository;
+
 
         public HolidayRepository(
             IConfiguration configuration,
             IHolidayFlagRepository holidayFlagRepository,
             IHolidayNameRepository holidayNameRepository,
-            IHolidayNoteRepository holidayNoteRepository)
+            IHolidayNoteRepository holidayNoteRepository,
+            IHolidayHolidayFlagRepository holidayHolidayFlagRepository,
+            IHolidayTypeRepository holidayTypeRepository,
+            ICountryHolidayRepository countryHolidayRepository,
+            ICountryRepository countryRepository
+            )
         {
             _connectionString = configuration.GetConnectionString("MainDatabase");
             _holidayFlagRepository = holidayFlagRepository;
             _holidayNameRepository = holidayNameRepository;
             _holidayNoteRepository = holidayNoteRepository;
+            _holidayHolidayFlagRepository = holidayHolidayFlagRepository;
+            _holidayTypeRepository = holidayTypeRepository;
+            _countryHolidayRepository = countryHolidayRepository;
+            _countryRepository = countryRepository;
         }
         public async Task<Dictionary<int, List<HolidayEntity>>> GetAsync()
         {
@@ -43,16 +50,20 @@ namespace CountryPublicHolidays.ServiceLibrary.Repositories
 
                 var holidaysDictionary = new Dictionary<int, List<HolidayEntity>>();
 
-                (await connection.QueryAsync<HolidayEntity, HolidayNameEntity, HolidayNoteEntity, HolidayFlagEntity, HolidayEntity>(
-                   @"SELECT h.*, hname.*, hnote.*, hflag.* 
-                   FROM Holidays h 
-                   INNER JOIN HolidayNames hname 
-                   ON h.Id = hname.HolidayId 
-                   LEFT JOIN HolidayNotes hnote 
-                   ON h.Id = hnote.HolidayId
-                   LEFT JOIN HolidayFlags hflag
-                   ON h.Id = hflag.HolidayId",
-                   (holiday, name, note, flag) =>
+                (await connection.QueryAsync<HolidayEntity, HolidayNameEntity, HolidayNoteEntity, HolidayFlagEntity, HolidayTypeEntity, HolidayEntity >(
+                   @"SELECT h.*, hname.*, hnote.*, hflag.*, ht.Type
+                    FROM Holidays h 
+                    left JOIN HolidayNames hname 
+                    ON h.Id = hname.HolidayId 
+                    LEFT JOIN HolidayNotes hnote 
+                    ON h.Id = hnote.HolidayId
+                    left join HolidaysHolidayFlags hhflag
+                    on hhflag.HolidayId = h.Id 
+                    left join HolidayFlags hflag
+                    on hflag.Id = hhflag.HolidayFlagId
+                    left join HolidayTypes ht
+                    on ht.Id = h.HolidayTypeId",
+                   (holiday, name, note, flag, holidayType) =>
                    {
                        int holidayMonth = holiday.Date.Month;
 
@@ -77,6 +88,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Repositories
                        }
 
                        holidayEntity.Name.Add(name);
+                       holidayEntity.HolidayType = holidayType;
 
                        if (note != null)
                        {
@@ -89,7 +101,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Repositories
                        }
                        return holidayEntity;
 
-                   }, splitOn: "Lang, Lang, Type"))
+                   }, splitOn: "Lang, Lang, Id, Type"))
                    .Distinct()
                    .ToList();
 
@@ -104,7 +116,11 @@ namespace CountryPublicHolidays.ServiceLibrary.Repositories
                 var result = await connection.QueryAsync<DateTime>(@"
 				             SELECT h.[Date]
 				             FROM [Holidays] h
-                             WHERE h.[Country] = @Country AND YEAR(h.[Date]) = @Year",
+							 join CountriesHolidays ch
+							 on ch.HolidayId = h.Id
+							 join Countries c
+							 on c.Id = ch.CountryId
+                             WHERE c.[CountryCode] = @Country AND YEAR(h.[Date]) = @Year",
                 new
                 {
                     Country = country,
@@ -115,40 +131,51 @@ namespace CountryPublicHolidays.ServiceLibrary.Repositories
             }
         }
 
-        public async Task<int> InsertAsync(HolidayEntity entity)
+        public async Task<int> InsertAsync(HolidayEntity entity, string country)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    var rowsAffected = await connection.ExecuteAsync(@"
+                    var rowsAffected = 0;
+
+                    var holidayTypeId = await _holidayTypeRepository.GetHolidayTypeIdAsync(connection, transaction, entity.HolidayType.Type);
+
+                    var countryId = await _countryRepository.GetCountryIdAsync(country);
+
+                    var holidayId = await connection.ExecuteScalarAsync<Guid>(@"
                     INSERT INTO [dbo].[Holidays]
                                 ([Id]
                                 ,[Date]
                                 ,[DateTo]
                                 ,[ObservedOn]
-                                ,[HolidayType]
-                                ,[Country])
+                                ,[HolidayTypeId])
+                            OUTPUT Inserted.Id
                             VALUES
                                 (@Id
                                 ,@Date
                                 ,@DateTo
                                 ,@ObservedOn
-                                ,@HolidayType
-                                ,@Country)",
+                                ,@HolidayTypeId)",
                                new
                                {
                                    entity.Id,
                                    entity.Date,
                                    entity.DateTo,
                                    entity.ObservedOn,
-                                   entity.HolidayType,
-                                   entity.Country
+                                   HolidayTypeId = holidayTypeId
                                }, transaction);
 
+                    
+                    foreach (var flag in entity.Flags)
+                    {
+                        var holidayFlagId = await _holidayFlagRepository.InsertAsync(connection, transaction, flag);
 
-                    rowsAffected += await _holidayFlagRepository.InsertAsync(connection, transaction, entity.Flags);
+                        await _holidayHolidayFlagRepository.InsertAsync(connection, transaction, new HolidayHolidayFlagEntity { HolidayId = holidayId, HolidayFlagId = holidayFlagId });
+                    }
+
+                    await _countryHolidayRepository.InsertAsync(connection, transaction, new CountryHolidayEntity { HolidayId = holidayId, CountryId = countryId });
 
                     rowsAffected += await _holidayNameRepository.InsertAsync(connection, transaction, entity.Name);
 
@@ -166,9 +193,13 @@ namespace CountryPublicHolidays.ServiceLibrary.Repositories
             using (var connection = new SqlConnection(_connectionString))
             {
                 var result = await connection.QueryAsync<HolidayEntity>(@"
-				             SELECT *
-				             FROM [Holidays]
-                             WHERE [Date] = @Date AND [Country] = @Country",
+				             SELECT h.*
+				             FROM [Holidays] h
+							 join CountriesHolidays ch
+							 on ch.HolidayId = h.Id
+							 join Countries c
+							 on c.Id = ch.CountryId
+                             WHERE h.[Date] = @Date AND c.[CountryCode] = @Country",
                 new
                 {
                     Date = date,

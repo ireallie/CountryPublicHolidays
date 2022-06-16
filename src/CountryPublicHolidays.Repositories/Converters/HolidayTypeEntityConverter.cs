@@ -22,7 +22,7 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
 
             foreach (var holidaytype in typelist)
             {
-                holidayTypeEntities.Add(new HolidayTypeEntity() {Type = holidaytype});
+                holidayTypeEntities.Add(new HolidayTypeEntity() {Id = Guid.NewGuid(), Type = holidaytype});
             }
 
             return holidayTypeEntities;

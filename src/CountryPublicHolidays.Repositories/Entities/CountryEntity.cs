@@ -42,26 +42,25 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
             }
         }
 
-        private IList<HolidayTypeEntity> _holidayTypes;
+        //private IList<HolidayTypeEntity> _holidayTypes;
 
         [JsonConverter(typeof(HolidayTypeEntityConverter))]
+        public IList<HolidayTypeEntity> HolidayTypes { get; set; } = new List<HolidayTypeEntity>();
+        //{   
+        //    get => _holidayTypes;
+        //    set
+        //    {
+        //        if (value != _holidayTypes)
+        //        {
+        //            _holidayTypes = value;
 
-        public IList<HolidayTypeEntity> HolidayTypes 
-        {   
-            get => _holidayTypes;
-            set
-            {
-                if (value != _holidayTypes)
-                {
-                    _holidayTypes = value;
-
-                    foreach (var holidayTypeEntity in _holidayTypes)
-                    {
-                        holidayTypeEntity.CountryId = Id;
-                    }
-                }
-            }
-        }
+        //            foreach (var holidayTypeEntity in _holidayTypes)
+        //            {
+        //                holidayTypeEntity.CountryId = Id;
+        //            }
+        //        }
+        //    }
+        //}
 
         public CountryEntity()
         {

@@ -13,8 +13,9 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
 {
     public class HolidayTypeEntity
     {
+        public Guid Id { get; set; }
         public string Type { get; set; }
-        public Guid CountryId { get; set; }
-
+        public IList<CountryEntity> Countries { get; set; } = new List<CountryEntity>();
+        public IList<HolidayEntity> Holidays { get; set; } = new List<HolidayEntity>();
     }
 }

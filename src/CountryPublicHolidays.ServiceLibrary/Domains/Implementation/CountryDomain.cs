@@ -9,11 +9,6 @@ using System.Threading.Tasks;
 
 namespace CountryPublicHolidays.ServiceLibrary.Domains
 {
-    public interface ICountryDomain
-    {
-        Task SaveCountries(IEnumerable<CountryEntity> entities);
-        Task<IEnumerable<CountryEntity>> GetCountries();
-    }
     public class CountryDomain : ICountryDomain
     {
         private readonly ICountryRepository _countryRepository;

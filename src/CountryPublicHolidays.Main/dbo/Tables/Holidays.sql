@@ -4,6 +4,7 @@
 	[Date]			DATETIME			NOT NULL,
 	[DateTo]		DATETIME			NULL,
 	[ObservedOn]	DATETIME			NULL,
-	[HolidayType]	NVARCHAR(25)		NOT NULL,
-	[Country]		NVARCHAR(50)		NOT NULL,
+	[HolidayTypeId]	UNIQUEIDENTIFIER	NOT NULL,
+	CONSTRAINT [FK_Holidays_To_HolidayTypes_Id] FOREIGN KEY ([HolidayTypeId]) REFERENCES [HolidayTypes]([Id])
+
 )

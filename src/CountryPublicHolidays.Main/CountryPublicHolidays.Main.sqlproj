@@ -67,6 +67,9 @@
     <Build Include="dbo\Tables\HolidayNames.sql" />
     <Build Include="dbo\Tables\HolidayNotes.sql" />
     <Build Include="dbo\Tables\HolidayFlags.sql" />
+    <Build Include="dbo\Tables\CountriesHolidayTypes.sql" />
+    <Build Include="dbo\Tables\HolidaysHolidayFlags.sql" />
+    <Build Include="dbo\Tables\CountriesHolidays.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DevSqlCompare.scmp" />

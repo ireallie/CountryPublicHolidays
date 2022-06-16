@@ -19,24 +19,24 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
 
         public DateTime? ObservedOn { get; set; }
 
-        private IList<HolidayFlagEntity> _flags;
+        //private IList<HolidayFlagEntity> _flags;
 
-        public IList<HolidayFlagEntity> Flags
-        {
-            get => _flags;
-            set
-            {
-                if (value != _flags)
-                {
-                    _flags = value;
+        public IList<HolidayFlagEntity> Flags { get; set; } = new List<HolidayFlagEntity>();
+        //{
+        //    get => _flags;
+        //    set
+        //    {
+        //        if (value != _flags)
+        //        {
+        //            _flags = value;
 
-                    foreach (var flag in _flags)
-                    {
-                        flag.HolidayId = Id;
-                    }
-                }
-            }
-        }
+        //            foreach (var flag in _flags)
+        //            {
+        //                flag.HolidayId = Id;
+        //            }
+        //        }
+        //    }
+        //}
 
         private IList<HolidayNameEntity> _name;
 
@@ -76,9 +76,10 @@ namespace CountryPublicHolidays.ServiceLibrary.Entities
             }
         }
 
-        public string HolidayType { get; set; }
+        //public IList<HolidayTypeEntity> HolidayTypes { get; set; } = new List<HolidayTypeEntity>();
 
-        public string Country { get; set; }
+        //public Guid CountryId { get; set; }
+        public HolidayTypeEntity HolidayType { get; set; }
 
         public HolidayEntity()
         {

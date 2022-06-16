@@ -53,6 +53,9 @@ namespace CountryPublicHolidays.Api
             services.AddSingleton<IHolidayNoteRepository, HolidayNoteRepository>();
             services.AddSingleton<IHolidayDomain, HolidayDomain>();
             services.AddSingleton<IMaxNumberOfFreeDaysCalculator, MaxNumberOfFreeDaysCalculator>();
+            services.AddSingleton<ICountryHolidayTypeRepository, CountryHolidayTypeRepository>();
+            services.AddSingleton<IHolidayHolidayFlagRepository, HolidayHolidayFlagRepository>();
+            services.AddSingleton<ICountryHolidayRepository, CountryHolidayRepository>();
 
             return services;
         }

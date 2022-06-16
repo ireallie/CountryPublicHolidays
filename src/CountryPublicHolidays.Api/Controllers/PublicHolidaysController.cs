@@ -147,8 +147,8 @@ namespace CountryPublicHolidays.Api.Controllers
         public async Task<JsonResult> GetSupportedCountriesListAsync()
         {
             var countries = await _countryDomain.GetCountries();
-            
-            if(countries.Count() > 0)
+
+            if (countries.Count() > 0)
             {
                 return new JsonResult(countries);
             }
